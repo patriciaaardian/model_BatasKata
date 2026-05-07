@@ -402,9 +402,13 @@
     }
     .result-verdict {
       font-family: 'Syne', sans-serif; font-weight: 900;
-      font-size: clamp(1.5rem, 3.2vw, 2.2rem);
+      /* FIX: use clamp with a tighter max so it never overflows the 385px panel */
+      font-size: clamp(1.4rem, 4.5vw, 1.9rem);
       line-height: 1; letter-spacing: -0.03em;
-      margin-bottom: 12px; white-space: nowrap;
+      margin-bottom: 12px;
+      /* allow wrapping as last resort instead of overflow */
+      white-space: normal;
+      word-break: break-word;
     }
     .result-verdict.safe   { color: #4ade80; }
     .result-verdict.danger { color: #ff4d4d; }
@@ -484,6 +488,12 @@
       .main-card { grid-template-columns: 1fr; }
       .card-left { border-right: none; border-bottom: 1px solid var(--border); padding: 28px; }
       .card-right { padding: 28px; }
+
+      /* On mobile, restore a larger responsive size since the panel is full-width */
+      .result-verdict {
+        font-size: clamp(1.8rem, 8vw, 3rem);
+        white-space: nowrap;
+      }
 
       .result-area { min-height: 220px; }
       .footer-strip { flex-direction: column; gap: 10px; text-align: center; }
@@ -627,7 +637,7 @@
     </div>
 
     <div class="footer-strip">
-      <span class="footer-note">© 2025 BatasKata — Proyek riset deteksi cyberbullying</span>
+      <span class="footer-note">© 2026 BatasKata — Proyek riset deteksi cyberbullying</span>
       <span class="footer-model">Backend: HuggingFace Spaces · Frontend: GitHub Pages</span>
     </div>
 
@@ -670,21 +680,17 @@
       const wrap = document.getElementById('resultIconWrap');
       wrap.innerHTML = '';
 
-      // Try Lottie first, fall back to SVG icon
       const player = document.createElement('dotlottie-player');
-      // Safe, royalty-free Lottie URLs from lottie.host
       const src = type === 'safe'
-        ? 'https://lottie.host/71e5bac8-d7ee-4a97-96b1-e71e69fb8e61/sOiXTM3hJb.lottie'  // checkmark
-        : 'https://lottie.host/e6d4bcef-0e56-4c94-97e9-df0a1fba6e63/hM0w9A0X4R.lottie'; // warning
+        ? 'https://lottie.host/71e5bac8-d7ee-4a97-96b1-e71e69fb8e61/sOiXTM3hJb.lottie'
+        : 'https://lottie.host/e6d4bcef-0e56-4c94-97e9-df0a1fba6e63/hM0w9A0X4R.lottie';
 
       player.setAttribute('src', src);
       player.setAttribute('background', 'transparent');
       player.setAttribute('speed', '1');
       player.setAttribute('style', 'width:68px;height:68px');
       player.setAttribute('autoplay', '');
-      // don't loop result icons — plays once
       player.addEventListener('error', () => {
-        // SVG fallback
         wrap.innerHTML = type === 'safe'
           ? `<svg width="52" height="52" viewBox="0 0 52 52" fill="none">
                <circle cx="26" cy="26" r="25" stroke="#4ade80" stroke-width="1.5"/>
