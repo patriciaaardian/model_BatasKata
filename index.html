@@ -402,13 +402,10 @@
     }
     .result-verdict {
       font-family: 'Syne', sans-serif; font-weight: 900;
-      /* FIX: use clamp with a tighter max so it never overflows the 385px panel */
-      font-size: clamp(1.4rem, 4.5vw, 1.9rem);
-      line-height: 1; letter-spacing: -0.03em;
+      font-size: 1.55rem;
+      line-height: 1.1; letter-spacing: -0.02em;
       margin-bottom: 12px;
-      /* allow wrapping as last resort instead of overflow */
-      white-space: normal;
-      word-break: break-word;
+      white-space: nowrap;
     }
     .result-verdict.safe   { color: #4ade80; }
     .result-verdict.danger { color: #ff4d4d; }
@@ -489,12 +486,6 @@
       .card-left { border-right: none; border-bottom: 1px solid var(--border); padding: 28px; }
       .card-right { padding: 28px; }
 
-      /* On mobile, restore a larger responsive size since the panel is full-width */
-      .result-verdict {
-        font-size: clamp(1.8rem, 8vw, 3rem);
-        white-space: nowrap;
-      }
-
       .result-area { min-height: 220px; }
       .footer-strip { flex-direction: column; gap: 10px; text-align: center; }
     }
@@ -542,7 +533,7 @@
         <div class="stat-label">Kelas Deteksi</div>
       </div>
       <div class="stat-cell" style="padding-left:32px">
-        <div class="stat-num">ID</div>
+        <div class="stat-num" style="font-size:1.5rem">ID-JV</div>
         <div class="stat-label">Bahasa Target</div>
       </div>
       <div class="stat-cell" style="padding-left:32px">
