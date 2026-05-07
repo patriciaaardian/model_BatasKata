@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deteksi Cyberbullying IndoBERT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; padding-top: 50px; }
+        .container { max-width: 600px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        #result { margin-top: 20px; font-weight: bold; font-size: 1.2rem; }
+        .loading { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container text-center">
+    <h2>Deteksi Cyberbullying</h2>
+    <p class="text-muted">Masukkan kalimat di bawah untuk mengecek indikasi cyberbullying.</p>
+    
+    <textarea id="inputText" class="form-control" rows="4" placeholder="Ketik kalimat di sini..."></textarea>
+    
+    <button onclick="checkBullying()" class="btn btn-primary mt-3 w-100" id="btnCheck">Cek Kalimat</button>
+    
+    <div id="loader" class="loading mt-3">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p>Model sedang berpikir...</p>
+    </div>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    async function checkBullying() {
+        const text = document.getElementById("inputText").value;
+        const resultDiv = document.getElementById("result");
+        const loader = document.getElementById("loader");
+        const btn = document.getElementById("btnCheck");
+
+        if (!text) {
+            alert("Harap masukkan teks terlebih dahulu!");
+            return;
+        }
+
+        // Tampilkan loading, sembunyikan hasil sebelumnya
+        loader.style.display = "block";
+        resultDiv.innerText = "";
+        btn.disabled = true;
+
+        try {
+            // GANTI URL INI dengan Direct URL Hugging Face kamu + /predict
+            const response = await fetch("https://pat00-model-bataskata.hf.space/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ "text": text })
+            });
+
+            const data = await response.json();
+            const prediction = data.prediction[0];
+            
+            // LOGIKA MAPPING LABEL
+            let labelTeks = "";
+            let warna = "";
+            
+            if (prediction.label === "LABEL_0") {
+                labelTeks = "AMAN (Bukan Cyberbullying)";
+                warna = "green";
+            } else {
+                labelTeks = "TERDETEKSI CYBERBULLYING!";
+                warna = "red";
+            }
+
+            // Tampilkan hasil dan persentase skor
+            const akurasi = (prediction.score * 100).toFixed(2);
+            resultDiv.innerHTML = `<span style="color: ${warna}">${labelTeks}</span><br>
+                                   <small class="text-muted">Tingkat Keyakinan: ${akurasi}%</small>`;
+
+        } catch (error) {
+            resultDiv.innerText = "Error: Gagal menghubungi server.";
+            console.error(error);
+        } finally {
+            loader.style.display = "none";
+            btn.disabled = false;
+        }
+    }
+</script>
+
+</body>
+</html>
