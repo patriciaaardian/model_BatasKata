@@ -91,8 +91,6 @@
       align-items: end;
     }
 
-    .hero-left {}
-
     .hero-eyebrow {
       font-size: 0.65rem;
       letter-spacing: 0.2em;
@@ -183,7 +181,7 @@
     }
 
     .card-left {
-      padding: 36px 36px 36px;
+      padding: 36px;
       border-right: 2px solid var(--border);
     }
 
@@ -193,6 +191,7 @@
       color: var(--paper);
       display: flex;
       flex-direction: column;
+      min-width: 0; /* Penting untuk mencegah overflow */
     }
 
     .input-label {
@@ -282,89 +281,20 @@
       flex-direction: column;
       justify-content: center;
       padding: 32px 0;
-    }
-
-    /* IDLE STATE */
-    .idle-state {
-      text-align: left;
-    }
-
-    .idle-icon {
-      width: 48px;
-      height: 48px;
-      border: 2px solid #444;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-
-    .idle-icon svg {
-      width: 22px;
-      height: 22px;
-      stroke: #888;
-      fill: none;
-      stroke-width: 1.5;
-    }
-
-    .idle-text {
-      font-size: 0.75rem;
-      color: #666;
-      line-height: 1.8;
-    }
-
-    /* LOADING STATE */
-    .loading-state { display: none; text-align: left; }
-
-    .loader-track {
-      width: 100%;
-      height: 2px;
-      background: #222;
-      margin-bottom: 24px;
       overflow: hidden;
     }
 
-    .loader-bar {
-      height: 100%;
-      background: var(--paper);
-      width: 0%;
-      animation: scan 1.6s ease-in-out infinite;
-    }
-
-    @keyframes scan {
-      0% { width: 0%; margin-left: 0; }
-      50% { width: 60%; margin-left: 20%; }
-      100% { width: 0%; margin-left: 100%; }
-    }
-
-    .loading-text {
-      font-size: 0.7rem;
-      color: #888;
-      letter-spacing: 0.1em;
-    }
-
-    .loading-dots::after {
-      content: '';
-      animation: dots 1.2s steps(4, end) infinite;
-    }
-
-    @keyframes dots {
-      0% { content: ''; }
-      25% { content: '.'; }
-      50% { content: '..'; }
-      75% { content: '...'; }
-    }
-
-    /* RESULT STATES */
-    .result-state { display: none; }
-
+    /* PERBAIKAN OVERFLOW TEXT */
     .result-verdict {
       font-family: 'Syne', sans-serif;
       font-weight: 800;
-      font-size: 2rem;
-      line-height: 1.05;
+      font-size: clamp(1.5rem, 4vw, 2.2rem); /* Ukuran dinamis agar muat */
+      line-height: 1.1;
       letter-spacing: -0.02em;
       margin-bottom: 16px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      text-transform: uppercase;
     }
 
     .result-verdict.safe { color: #4ade80; }
@@ -373,129 +303,85 @@
     .result-badge {
       display: inline-block;
       font-size: 0.6rem;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.1rem;
       text-transform: uppercase;
-      padding: 5px 12px;
+      padding: 5px 10px;
       margin-bottom: 24px;
       font-family: 'Space Mono', monospace;
+      border: 1px solid currentColor;
+      max-width: 100%;
     }
 
-    .result-badge.safe {
-      border: 1px solid #4ade80;
-      color: #4ade80;
-    }
+    .result-badge.safe { color: #4ade80; }
+    .result-badge.danger { color: #ff4d4d; }
 
-    .result-badge.danger {
-      border: 1px solid #ff4d4d;
-      color: #ff4d4d;
+    /* IDLE STATE */
+    .idle-state { text-align: left; }
+    .idle-icon {
+      width: 48px; height: 48px; border: 2px solid #444;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
     }
+    .idle-icon svg { width: 22px; height: 22px; stroke: #888; fill: none; stroke-width: 1.5; }
+    .idle-text { font-size: 0.75rem; color: #666; line-height: 1.8; }
 
-    .confidence-label {
-      font-size: 0.6rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #555;
-      margin-bottom: 8px;
+    /* LOADING STATE */
+    .loading-state { display: none; text-align: left; }
+    .loader-track { width: 100%; height: 2px; background: #222; margin-bottom: 24px; overflow: hidden; }
+    .loader-bar { height: 100%; background: var(--paper); width: 0%; animation: scan 1.6s ease-in-out infinite; }
+    @keyframes scan {
+      0% { width: 0%; margin-left: 0; }
+      50% { width: 60%; margin-left: 20%; }
+      100% { width: 0%; margin-left: 100%; }
     }
+    .loading-text { font-size: 0.7rem; color: #888; letter-spacing: 0.1em; }
+    .loading-dots::after { content: ''; animation: dots 1.2s steps(4, end) infinite; }
+    @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
 
-    .confidence-track {
-      width: 100%;
-      height: 3px;
-      background: #2a2a2a;
-      margin-bottom: 6px;
-    }
-
-    .confidence-fill {
-      height: 100%;
-      transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
+    /* CONFIDENCE BAR */
+    .result-state { display: none; }
+    .confidence-label { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: #555; margin-bottom: 8px; }
+    .confidence-track { width: 100%; height: 3px; background: #2a2a2a; margin-bottom: 6px; }
+    .confidence-fill { height: 100%; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); }
     .confidence-fill.safe { background: #4ade80; }
     .confidence-fill.danger { background: #ff4d4d; }
-
-    .confidence-num {
-      font-family: 'Syne', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 700;
-    }
-
+    .confidence-num { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; }
     .confidence-num.safe { color: #4ade80; }
     .confidence-num.danger { color: #ff4d4d; }
 
     /* ERROR STATE */
     .error-state { display: none; }
-
-    .error-msg {
-      font-size: 0.75rem;
-      color: #ff6b6b;
-      line-height: 1.8;
-    }
+    .error-msg { font-size: 0.75rem; color: #ff6b6b; line-height: 1.8; }
 
     /* FOOTER STRIP */
     .footer-strip {
-      margin-top: 48px;
-      padding-top: 20px;
-      border-top: 2px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      margin-top: 48px; padding-top: 20px; border-top: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
     }
-
-    .footer-note {
-      font-size: 0.65rem;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
-
-    .footer-model {
-      font-size: 0.65rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
+    .footer-note, .footer-model { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.05em; }
 
     /* DISCLAIMER */
     .disclaimer {
-      margin-top: 16px;
-      font-size: 0.65rem;
-      color: var(--muted);
-      line-height: 1.7;
-      padding: 14px 16px;
-      border-left: 3px solid var(--accent);
+      margin-top: 16px; font-size: 0.65rem; color: var(--muted); line-height: 1.7;
+      padding: 14px 16px; border-left: 3px solid var(--accent);
     }
 
     /* RESPONSIVE */
     @media (max-width: 768px) {
       .page { padding: 0 20px 60px; }
       .header-strip { padding: 10px 20px; }
-
-      .hero {
-        grid-template-columns: 1fr;
-        gap: 24px;
-        padding: 40px 0 32px;
-      }
-
+      .hero { grid-template-columns: 1fr; gap: 24px; padding: 40px 0 32px; }
       .hero-desc { margin-left: 0; }
-
       .stats-row { flex-wrap: wrap; }
       .stat-cell { flex: 0 0 50%; border-bottom: 2px solid var(--border); }
-      .stat-cell:last-child { border-right: 2px solid var(--border); }
-
-      .main-card {
-        grid-template-columns: 1fr;
-        margin-top: 32px;
-      }
-
+      .main-card { grid-template-columns: 1fr; margin-top: 32px; }
       .card-left { border-right: none; border-bottom: 2px solid var(--border); padding: 24px; }
       .card-right { padding: 24px; }
-
       .footer-strip { flex-direction: column; gap: 8px; text-align: center; }
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
   <header class="header-strip">
     <a class="logo" href="#">BATAS<span>KATA</span></a>
     <span class="tag">IndoBERT v1.0</span>
@@ -503,7 +389,6 @@
 
   <main class="page">
 
-    <!-- HERO -->
     <section class="hero">
       <div class="hero-left">
         <p class="hero-eyebrow">Analisis Teks Real-time</p>
@@ -515,113 +400,72 @@
       </div>
       <div class="hero-right">
         <p class="hero-desc">
-          Model <strong>IndoBERT</strong> terlatih khusus untuk mendeteksi ujaran kebencian dan cyberbullying dalam bahasa Indonesia. Masukkan teks, dapatkan analisis instan.
+          Model <strong>IndoBERT</strong> terlatih khusus untuk mendeteksi ujaran kebencian dan cyberbullying dalam bahasa Indonesia.
         </p>
       </div>
     </section>
 
-    <!-- STATS -->
     <div class="stats-row">
       <div class="stat-cell" style="padding-left: 0;">
         <div class="stat-num">2</div>
         <div class="stat-label">Kelas Deteksi</div>
       </div>
-      <div class="stat-cell" style="padding-left: 32px;">
+      <div class="stat-cell" style="padding-left: 20px;">
         <div class="stat-num">ID</div>
         <div class="stat-label">Bahasa Target</div>
       </div>
-      <div class="stat-cell" style="padding-left: 32px;">
+      <div class="stat-cell" style="padding-left: 20px;">
         <div class="stat-num">&lt;2s</div>
-        <div class="stat-label">Waktu Respons</div>
+        <div class="stat-label">Respons</div>
       </div>
-      <div class="stat-cell" style="padding-left: 32px;">
+      <div class="stat-cell" style="padding-left: 20px;">
         <div class="stat-num">BERT</div>
-        <div class="stat-label">Arsitektur Model</div>
+        <div class="stat-label">Arsitektur</div>
       </div>
     </div>
 
-    <!-- MAIN CARD -->
     <div class="main-card">
-
-      <!-- LEFT: INPUT -->
       <div class="card-left">
-        <label class="input-label" for="inputText">— Masukkan teks untuk dianalisis</label>
-        <textarea
-          id="inputText"
-          class="text-input"
-          rows="6"
-          placeholder="Ketik atau tempel kalimat di sini..."
-          oninput="updateCharCount(this)"
-        ></textarea>
+        <label class="input-label" for="inputText">— Masukkan teks</label>
+        <textarea id="inputText" class="text-input" rows="6" placeholder="Ketik kalimat di sini..." oninput="updateCharCount(this)"></textarea>
         <div class="char-count"><span id="charCount">0</span> karakter</div>
-
         <button class="submit-btn" id="btnCheck" onclick="checkBullying()">
           Analisis Sekarang <span class="btn-arrow">→</span>
         </button>
-
-        <p class="disclaimer">
-          ⚠ Hasil analisis bersifat prediktif. Model mungkin tidak sempurna — selalu gunakan penilaian manusia sebagai acuan akhir.
-        </p>
+        <p class="disclaimer">⚠ Hasil bersifat prediktif. Gunakan penilaian manusia sebagai acuan akhir.</p>
       </div>
 
-      <!-- RIGHT: RESULT PANEL -->
       <div class="card-right">
         <span class="panel-title">— Output analisis</span>
-
         <div class="result-area">
-          <!-- IDLE -->
           <div class="idle-state" id="idleState">
-            <div class="idle-icon">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            </div>
-            <p class="idle-text">
-              Hasil analisis akan muncul<br>
-              di panel ini setelah<br>
-              kamu menekan tombol analisis.
-            </p>
+            <div class="idle-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <p class="idle-text">Hasil akan muncul di sini setelah dianalisis.</p>
           </div>
-
-          <!-- LOADING -->
           <div class="loading-state" id="loadingState">
-            <div class="loader-track">
-              <div class="loader-bar"></div>
-            </div>
+            <div class="loader-track"><div class="loader-bar"></div></div>
             <p class="loading-text">Memproses<span class="loading-dots"></span></p>
           </div>
-
-          <!-- RESULT -->
           <div class="result-state" id="resultState">
             <div class="result-verdict" id="resultVerdict">—</div>
             <div class="result-badge" id="resultBadge">—</div>
-            <div class="confidence-label">Tingkat keyakinan model</div>
-            <div class="confidence-track">
-              <div class="confidence-fill" id="confidenceFill" style="width: 0%"></div>
-            </div>
+            <div class="confidence-label">Keyakinan model</div>
+            <div class="confidence-track"><div class="confidence-fill" id="confidenceFill"></div></div>
             <div class="confidence-num" id="confidenceNum">—</div>
           </div>
-
-          <!-- ERROR -->
-          <div class="error-state" id="errorState">
-            <p class="error-msg" id="errorMsg">—</p>
-          </div>
+          <div class="error-state" id="errorState"><p class="error-msg" id="errorMsg">—</p></div>
         </div>
-
       </div>
     </div>
 
-    <!-- FOOTER -->
     <div class="footer-strip">
-      <span class="footer-note">© 2025 BatasKata — Proyek riset deteksi cyberbullying</span>
-      <span class="footer-model">Backend: HuggingFace Spaces · Frontend: GitHub Pages</span>
+      <span class="footer-note">© 2025 BatasKata</span>
+      <span class="footer-model">IndoBERT Model</span>
     </div>
-
   </main>
 
   <script>
-    function updateCharCount(el) {
-      document.getElementById('charCount').textContent = el.value.length;
-    }
-
+    function updateCharCount(el) { document.getElementById('charCount').textContent = el.value.length; }
     function setState(state) {
       document.getElementById('idleState').style.display    = state === 'idle'    ? 'block' : 'none';
       document.getElementById('loadingState').style.display = state === 'loading' ? 'block' : 'none';
@@ -632,12 +476,7 @@
     async function checkBullying() {
       const text = document.getElementById("inputText").value.trim();
       const btn  = document.getElementById("btnCheck");
-
-      if (!text) {
-        document.getElementById("inputText").style.borderBottomColor = "#e63c1e";
-        setTimeout(() => document.getElementById("inputText").style.borderBottomColor = "", 1200);
-        return;
-      }
+      if (!text) return;
 
       setState('loading');
       btn.disabled = true;
@@ -648,7 +487,6 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ "text": text })
         });
-
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
         const data = await response.json();
@@ -663,32 +501,20 @@
 
         verdict.textContent = isBully ? "TERDETEKSI" : "AMAN";
         verdict.className   = "result-verdict " + (isBully ? "danger" : "safe");
-
-        badge.textContent = isBully ? "⚠ Mengandung Cyberbullying" : "✓ Tidak Ada Indikasi";
-        badge.className   = "result-badge " + (isBully ? "danger" : "safe");
-
-        fill.style.width = "0%";
-        fill.className   = "confidence-fill " + (isBully ? "danger" : "safe");
+        badge.textContent   = isBully ? "⚠ Cyberbullying" : "✓ Tidak Ada Indikasi";
+        badge.className     = "result-badge " + (isBully ? "danger" : "safe");
+        fill.style.width    = "0%";
+        fill.className      = "confidence-fill " + (isBully ? "danger" : "safe");
         setTimeout(() => fill.style.width = score + "%", 50);
-
-        num.textContent = score + "% keyakinan";
-        num.className   = "confidence-num " + (isBully ? "danger" : "safe");
+        num.textContent     = score + "% keyakinan";
+        num.className       = "confidence-num " + (isBully ? "danger" : "safe");
 
         setState('result');
-
       } catch (err) {
-        document.getElementById("errorMsg").textContent =
-          "Gagal menghubungi server. Pastikan backend aktif atau coba beberapa saat lagi.\n\n(" + err.message + ")";
+        document.getElementById("errorMsg").textContent = "Gagal menghubungi server: " + err.message;
         setState('error');
-      } finally {
-        btn.disabled = false;
-      }
+      } finally { btn.disabled = false; }
     }
-
-    // Allow Enter+Ctrl to submit
-    document.getElementById("inputText").addEventListener("keydown", function(e) {
-      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) checkBullying();
-    });
   </script>
 </body>
 </html>
